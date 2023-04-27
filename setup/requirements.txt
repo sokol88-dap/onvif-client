@@ -1,0 +1,2 @@
+# for API
+fastapi[all]==0.95.1
