@@ -1,2 +1,8 @@
 # for API
 fastapi[all]==0.95.1
+
+# zeep soap client
+zeep[async]==4.2.0
+
+# for typing and environment variables
+pydantic[dotenv]==1.10.7
