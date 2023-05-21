@@ -30,8 +30,7 @@ class OnvifClientDevice(OnvifClient):  # pylint: disable=too-few-public-methods
         return f"http://{self.source.host}:{self.source.port}/onvif/device_service"
 
     def _get_wsdl_path(self):
-        # return os.path.join(self.common.wsdl_path, "ver10/device/wsdl/devicemgmt.wsdl")
-        return os.path.join(self.common.wsdl_path, "devicemgmt.wsdl")
+        return os.path.join(self.common.wsdl_path, "ver10/device/wsdl/devicemgmt.wsdl")
 
     @async_timeout_checker
     async def get_device_information(self) -> DeviceInfo:
