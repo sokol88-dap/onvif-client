@@ -3,11 +3,12 @@ from abc import abstractmethod
 from dataclasses import dataclass
 from functools import wraps
 
+import httpx
+from httpx import ReadTimeout, ConnectTimeout  # we used httpx inside of zeep
 from zeep import Settings, AsyncClient
 from zeep.proxy import ServiceProxy, AsyncServiceProxy
 from zeep.wsse.username import UsernameToken
 from zeep.transports import AsyncTransport
-from httpx import ReadTimeout, ConnectTimeout  # we used httpx inside of zeep
 
 from src.config import ONVIFSettings
 from src.model.source import Source
@@ -40,6 +41,12 @@ def async_timeout_checker(func):
             raise OnvifClientServiceError("ONVIF timeout error") from exc
 
     return wrapper
+
+
+def get_camera_url_for_bosch_security(url):
+    response = httpx.post(url, verify=False, timeout=30)
+    response.raise_for_status()
+    return response.json()["onvifUrl"].replace("/onvif/device_service", "")
 
 
 class AsyncZeepClientFix(AsyncClient):
@@ -86,12 +93,17 @@ class OnvifClient:  # pylint: disable=too-few-public-methods
     def _create_client(self) -> AsyncClient:
         return AsyncZeepClientFix(
             wsdl=self._get_wsdl_path(),
-            wsse=UsernameToken(self.source.user, self.source.password, use_digest=True),
+            wsse=UsernameToken(self.source.user or "", self.source.password or "", use_digest=True),
             settings=Settings(xml_huge_tree=True, raw_response=False, strict=False),
             transport=AsyncTransport(
                 timeout=self.common.timeout, operation_timeout=self.common.operation_timeout
             ),
         )
+
+    def _get_base_url(self):
+        if self.source.bosch_security_url:
+            return get_camera_url_for_bosch_security(self.source.bosch_security_url)
+        return f"http://{self.source.host}:{self.source.port}"
 
     @abstractmethod
     def _get_service_url(self):

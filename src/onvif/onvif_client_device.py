@@ -13,21 +13,11 @@ class DeviceInfo:
     hardware_id: str = ""
 
 
-class OnvifClientDeviceWrongTimezone(Exception):
-    pass
-
-
-class OnvifClientDeviceWrongInformation(Exception):
-    pass
-
-
 class OnvifClientDevice(OnvifClient):  # pylint: disable=too-few-public-methods
     BINDING_NAME = "{http://www.onvif.org/ver10/device/wsdl}DeviceBinding"
 
     def _get_service_url(self):
-        if self.source.is_tunnel:
-            return f"{self.source.host}/onvif/device_service"
-        return f"http://{self.source.host}:{self.source.port}/onvif/device_service"
+        return f"{self._get_base_url()}/onvif/device_service"
 
     def _get_wsdl_path(self):
         return os.path.join(self.common.wsdl_path, "ver10/device/wsdl/devicemgmt.wsdl")

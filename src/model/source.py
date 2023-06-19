@@ -3,7 +3,7 @@ from pydantic import BaseModel, Field
 
 class Source(BaseModel):
     host: str = Field(
-        ...,
+        None,
         title="Camera host",
         description="It can be dns name or ip to the camera.",
         example="127.0.0.1",
@@ -29,7 +29,9 @@ class Source(BaseModel):
         description="Password for authentication on the camera.",
         example="password",
     )
-
-    @property
-    def is_tunnel(self) -> bool:
-        return any(scheme in self.host for scheme in ["http://", "https://"])
+    bosch_security_url: str = Field(
+        None,
+        title="Bosch security url",
+        description="Used when we try to connect to camera through Bosch security system.",
+        example="https://cbs.com/rest/vx/v1/devices/bvip2:cb80a4b7569d/connection",
+    )

@@ -16,3 +16,35 @@ ONVIF client tool for communicate with camera
 ```
 > uvicorn src.api:app
 ```
+
+If you want to reload the server when you change the code, use `--reload` option.
+
+# Examples
+
+# Use direct onvif connection to the camera and get the device information
+
+```
+curl -X 'POST' \
+  'http://127.0.0.1:8000/api/device/device_information' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "host": "1.2.3.4",
+  "port": 80,
+  "user": "user",
+  "password": "password"
+}'
+```
+
+# Use onvif connection to the camera via bosch security system and get audio outputs
+
+```
+curl -X 'POST' \
+  'http://127.0.0.1:8000/api/media/get_audio_outputs' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "bosch_security_url": "https://cbs.com/rest/vx/v1/devices/bvip2:cb80a4b7569d/connection"
+}'
+```
+
