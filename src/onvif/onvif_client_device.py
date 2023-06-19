@@ -13,6 +13,13 @@ class DeviceInfo:
     hardware_id: str = ""
 
 
+@dataclass
+class SystemDateAndTime:
+    date_time_type: str = ""
+    daylight_savings: bool | None = None
+    time_zone: str = ""
+
+
 class OnvifClientDevice(OnvifClient):  # pylint: disable=too-few-public-methods
     BINDING_NAME = "{http://www.onvif.org/ver10/device/wsdl}DeviceBinding"
 
@@ -33,4 +40,15 @@ class OnvifClientDevice(OnvifClient):  # pylint: disable=too-few-public-methods
             firmware_version=resp["FirmwareVersion"],
             serial_number=resp["SerialNumber"],
             hardware_id=resp["HardwareId"],
+        )
+
+    @async_timeout_checker
+    async def get_system_date_and_time(self) -> SystemDateAndTime:
+        if not self.service:
+            raise OnvifClientServiceError("Service doesn't initialized")
+        resp = await self.service.GetSystemDateAndTime()
+        return SystemDateAndTime(
+            date_time_type=resp["DateTimeType"],
+            daylight_savings=resp["DaylightSavings"],
+            time_zone=resp["TimeZone"]["TZ"],
         )

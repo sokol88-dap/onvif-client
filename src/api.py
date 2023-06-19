@@ -6,7 +6,7 @@ from fastapi import FastAPI, HTTPException
 from src.model.source import Source
 from src.config import ONVIFSettings
 from src.onvif.onvif_client import OnvifClientSettings
-from src.onvif.onvif_client_device import OnvifClientDevice, DeviceInfo
+from src.onvif.onvif_client_device import OnvifClientDevice, DeviceInfo, SystemDateAndTime
 from src.onvif.onvif_client_media import OnvifClientMedia, AudioOutputs
 
 logging.basicConfig(
@@ -17,13 +17,25 @@ logging.basicConfig(
 app = FastAPI()
 
 
-@app.post("/api/device/device_information")
+@app.post("/api/device/get_device_information")
 async def get_device_information(source: Source) -> DeviceInfo:
     try:
         client = OnvifClientDevice(
             settings=OnvifClientSettings(source=source, common=ONVIFSettings())
         )
         return await client.get_device_information()
+    except Exception as exc:  # pylint: disable=broad-except
+        logging.exception("Error %s, Traceback: %s", exc, exc.__traceback__)
+        raise HTTPException(status_code=409, detail=str(exc)) from exc
+
+
+@app.post("/api/device/get_system_date_and_time")
+async def get_system_date_and_time(source: Source) -> SystemDateAndTime:
+    try:
+        client = OnvifClientDevice(
+            settings=OnvifClientSettings(source=source, common=ONVIFSettings())
+        )
+        return await client.get_system_date_and_time()
     except Exception as exc:  # pylint: disable=broad-except
         logging.exception("Error %s, Traceback: %s", exc, exc.__traceback__)
         raise HTTPException(status_code=409, detail=str(exc)) from exc
