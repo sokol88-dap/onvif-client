@@ -4,6 +4,7 @@ ONVIF client tool for communicate with camera
 # Install DEV environment
 
 ```
+> sudo apt update
 > sudo apt install python3.11
 > sudo apt install python3.11-venv
 > python3.11 -m venv .dev-3.11
@@ -19,6 +20,11 @@ ONVIF client tool for communicate with camera
 
 If you want to reload the server when you change the code, use `--reload` option.
 
+# Running API in EC2 instance
+
+```
+uvicorn src.api:app --host 0.0.0.0
+```
 # Examples
 
 # Use direct onvif connection to the camera and get the device information

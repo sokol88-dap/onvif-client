@@ -96,7 +96,9 @@ class OnvifClient:  # pylint: disable=too-few-public-methods
             wsse=UsernameToken(self.source.user or "", self.source.password or "", use_digest=True),
             settings=Settings(xml_huge_tree=True, raw_response=False, strict=False),
             transport=AsyncTransport(
-                timeout=self.common.timeout, operation_timeout=self.common.operation_timeout
+                timeout=self.common.timeout,
+                operation_timeout=self.common.operation_timeout,
+                verify_ssl=False,
             ),
         )
 
