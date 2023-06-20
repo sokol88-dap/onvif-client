@@ -6,7 +6,7 @@ from fastapi import FastAPI, HTTPException
 from src.model.source import Source
 from src.config import ONVIFSettings
 from src.onvif.onvif_client import OnvifClientSettings
-from src.onvif.onvif_client_device import OnvifClientDevice, DeviceInfo, SystemDateAndTime
+from src.onvif.onvif_client_device import OnvifClientDevice, DeviceInformation, SystemDateTime
 from src.onvif.onvif_client_media import OnvifClientMedia, AudioOutputs
 
 logging.basicConfig(
@@ -18,7 +18,7 @@ app = FastAPI()
 
 
 @app.post("/api/device/get_device_information")
-async def get_device_information(source: Source) -> DeviceInfo:
+async def get_device_information(source: Source) -> DeviceInformation:
     try:
         client = OnvifClientDevice(
             settings=OnvifClientSettings(source=source, common=ONVIFSettings())
@@ -30,7 +30,7 @@ async def get_device_information(source: Source) -> DeviceInfo:
 
 
 @app.post("/api/device/get_system_date_and_time")
-async def get_system_date_and_time(source: Source) -> SystemDateAndTime:
+async def get_system_date_and_time(source: Source) -> SystemDateTime:
     try:
         client = OnvifClientDevice(
             settings=OnvifClientSettings(source=source, common=ONVIFSettings())

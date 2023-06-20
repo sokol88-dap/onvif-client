@@ -5,6 +5,7 @@ class ONVIFSettings(BaseModel):
     wsdl_path: str = "src/wsdl/"
     timeout: int = 60
     operation_timeout: int = 60
+    verify_ssl: bool = False
 
 
 class CommonSettings(BaseSettings):

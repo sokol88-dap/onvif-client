@@ -98,7 +98,7 @@ class OnvifClient:  # pylint: disable=too-few-public-methods
             transport=AsyncTransport(
                 timeout=self.common.timeout,
                 operation_timeout=self.common.operation_timeout,
-                verify_ssl=False,
+                verify_ssl=self.common.verify_ssl,
             ),
         )
 

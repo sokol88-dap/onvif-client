@@ -25,6 +25,13 @@ If you want to reload the server when you change the code, use `--reload` option
 ```
 uvicorn src.api:app --host 0.0.0.0
 ```
+
+in background
+
+```
+nohup uvicorn src.api:app --host 0.0.0.0 > output.log 2>&1 &
+```
+
 # Examples
 
 # Use direct onvif connection to the camera and get the device information
