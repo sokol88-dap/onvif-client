@@ -12,13 +12,25 @@ ONVIF client tool for communicate with camera
 > python -m pip install -r setup/requirements_dev.txt
 ```
 
-# Running API in local
+# Running Application in local
 
 ```
 > uvicorn src.api:app
 ```
 
 If you want to reload the server when you change the code, use `--reload` option.
+
+# Running Application using docker-compose and images from docker hub
+
+To start the application, run the following command:
+```
+docker-compose -f setup/docker-compose.yml up -d app
+```
+
+To stop the application, run the following command:
+```
+docker-compose -f setup/docker-compose.yml down
+```
 
 # Running API in EC2 instance
 

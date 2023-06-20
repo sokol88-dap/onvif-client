@@ -29,6 +29,3 @@ jobs:
         run: |
           docker buildx create --use
           docker buildx build --platform linux/amd64,linux/arm64 --push -t ${{ secrets.DOCKERHUB_USERNAME }}/onvif-client:latest -f setup/app.Dockerfile .
-
-      - name: Push container to Docker Hub
-        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/onvif-client:latest
