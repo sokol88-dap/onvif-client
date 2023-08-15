@@ -77,6 +77,32 @@ class SystemDateTime:
         )
 
 
+@dataclass
+class SystemLog:
+    type: str
+    uri: str
+
+
+@dataclass
+class SystemUris:
+    system_log_uris: list[SystemLog] | None
+    support_info_uri: str | None
+    system_backup_uri: str | None
+    extension: dict | None
+
+    @staticmethod
+    def create(obj: Any) -> "SystemUris":
+        return SystemUris(
+            system_log_uris=[
+                SystemLog(type=log["Type"], uri=log["Uri"])
+                for log in obj["SystemLogUris"]["SystemLog"]
+            ],
+            support_info_uri=obj["SupportInfoUri"],
+            system_backup_uri=obj["SystemBackupUri"],
+            extension=obj["Extension"],
+        )
+
+
 class OnvifClientDevice(OnvifClient):  # pylint: disable=too-few-public-methods
     BINDING_NAME = "{http://www.onvif.org/ver10/device/wsdl}DeviceBinding"
 
@@ -99,3 +125,11 @@ class OnvifClientDevice(OnvifClient):  # pylint: disable=too-few-public-methods
             raise OnvifClientServiceError("Service doesn't initialized")
         resp = await self.service.GetSystemDateAndTime()
         return SystemDateTime.create(resp)
+
+    @async_timeout_checker
+    async def get_system_uris(self) -> SystemUris:
+        if not self.service:
+            raise OnvifClientServiceError("Service doesn't initialized")
+        resp = await self.service.GetSystemUris()
+        sys_uris = SystemUris.create(resp)
+        return sys_uris
