@@ -35,7 +35,7 @@ docker-compose -f setup/docker-compose.yml down
 # Running API in EC2 instance
 
 ```
-uvicorn src.api:app --host 0.0.0.0
+uvicorn src.api:app --host 0.0.0.0 --reload
 ```
 
 in background

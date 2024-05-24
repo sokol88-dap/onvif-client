@@ -1,4 +1,5 @@
 """Base class for onvif clients"""
+
 from abc import abstractmethod
 from dataclasses import dataclass
 from functools import wraps
