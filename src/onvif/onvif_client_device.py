@@ -2,7 +2,7 @@ import os
 from dataclasses import dataclass
 from typing import Any
 
-from src.onvif.onvif_client import OnvifClient, OnvifClientServiceError, async_timeout_checker
+from src.onvif.onvif_client import OnvifClient, async_timeout_checker
 
 
 @dataclass
@@ -114,22 +114,19 @@ class OnvifClientDevice(OnvifClient):  # pylint: disable=too-few-public-methods
 
     @async_timeout_checker
     async def get_device_information(self) -> DeviceInformation:
-        if not self.service:
-            raise OnvifClientServiceError("Service doesn't initialized")
-        resp = await self.service.GetDeviceInformation()
+        self._check_service()
+        resp = await self.service.GetDeviceInformation()  # type: ignore
         return DeviceInformation.create(resp)
 
     @async_timeout_checker
     async def get_system_date_and_time(self) -> SystemDateTime:
-        if not self.service:
-            raise OnvifClientServiceError("Service doesn't initialized")
-        resp = await self.service.GetSystemDateAndTime()
+        self._check_service()
+        resp = await self.service.GetSystemDateAndTime()  # type: ignore
         return SystemDateTime.create(resp)
 
     @async_timeout_checker
     async def get_system_uris(self) -> SystemUris:
-        if not self.service:
-            raise OnvifClientServiceError("Service doesn't initialized")
-        resp = await self.service.GetSystemUris()
+        self._check_service()
+        resp = await self.service.GetSystemUris()  # type: ignore
         sys_uris = SystemUris.create(resp)
         return sys_uris

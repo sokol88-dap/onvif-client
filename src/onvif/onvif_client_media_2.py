@@ -3,7 +3,7 @@ import logging
 from dataclasses import dataclass, field
 from typing import Any
 
-from src.onvif.onvif_client import OnvifClient, OnvifClientServiceError, async_timeout_checker
+from src.onvif.onvif_client import OnvifClient, async_timeout_checker
 
 
 @dataclass
@@ -104,7 +104,13 @@ class OnvifClientMedia2(OnvifClient):  # pylint: disable=too-few-public-methods
 
     @async_timeout_checker
     async def get_video_encoder_configurations(self) -> GetVideoEncoderConfigurationsResponse:
-        if not self.service:
-            raise OnvifClientServiceError("Service doesn't initialized")
-        resp = await self.service.GetVideoEncoderConfigurations()
+        self._check_service()
+        resp = await self.service.GetVideoEncoderConfigurations()  # type: ignore
         return GetVideoEncoderConfigurationsResponse.create(resp)
+
+    @async_timeout_checker
+    async def get_profiles(self) -> dict[str, str]:
+        self._check_service()
+        resp = await self.service.GetProfiles(Type="All")  # type: ignore
+        logging.info("Profiles: %s", resp)
+        return {"test": "test"}

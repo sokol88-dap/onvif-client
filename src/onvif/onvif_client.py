@@ -10,6 +10,7 @@ from zeep import Settings, AsyncClient
 from zeep.proxy import ServiceProxy, AsyncServiceProxy
 from zeep.wsse.username import UsernameToken
 from zeep.transports import AsyncTransport
+from zeep.exceptions import Fault
 
 from src.config import ONVIFSettings
 from src.model.source import Source
@@ -40,6 +41,8 @@ def async_timeout_checker(func):
             return await func(*args, **kwargs)
         except (ReadTimeout, ConnectTimeout) as exc:
             raise OnvifClientServiceError("ONVIF timeout error") from exc
+        except Fault as exc:
+            raise OnvifClientServiceError(f"ONVIF unexpected Fault. Error: {exc.message}") from exc
 
     return wrapper
 
@@ -107,6 +110,10 @@ class OnvifClient:  # pylint: disable=too-few-public-methods
         if self.source.bosch_security_url:
             return get_camera_url_for_bosch_security(self.source.bosch_security_url)
         return f"http://{self.source.host}:{self.source.port}"
+
+    def _check_service(self):
+        if not self.service:
+            raise OnvifClientServiceError("Service doesn't initialized")
 
     @abstractmethod
     def _get_service_url(self):
