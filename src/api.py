@@ -13,7 +13,7 @@ from src.onvif.onvif_client_device import (
     SystemDateTime,
     SystemUris,
 )
-from src.onvif.onvif_client_media import OnvifClientMedia, AudioOutputs
+from src.onvif.onvif_client_media import OnvifClientMedia, AudioOutputs, MediaProfiles
 from src.onvif.onvif_client_media_2 import OnvifClientMedia2, GetVideoEncoderConfigurationsResponse
 from src.onvif.onvif_client_replay import OnvifClientReplay
 
@@ -72,7 +72,7 @@ async def get_audio_outputs(source: Source) -> AudioOutputs:
 
 @media_router.post("/get_profiles", tags=["Media"])
 @conflict_exception_decorator
-async def get_profiles(source: Source) -> dict[str, str]:
+async def get_profiles(source: Source) -> MediaProfiles:
     client = OnvifClientMedia(settings=OnvifClientSettings(source=source, common=ONVIFSettings()))
     return await client.get_profiles()
 

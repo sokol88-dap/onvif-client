@@ -80,7 +80,11 @@ class SystemDateTime:
 @dataclass
 class SystemLog:
     type: str
-    uri: str
+    uri: str | None
+
+    @staticmethod
+    def create(obj: Any) -> "SystemLog":
+        return SystemLog(type=obj["Type"], uri=obj["Uri"] if obj["Uri"] else None)
 
 
 @dataclass
@@ -93,10 +97,7 @@ class SystemUris:
     @staticmethod
     def create(obj: Any) -> "SystemUris":
         return SystemUris(
-            system_log_uris=[
-                SystemLog(type=log["Type"], uri=log["Uri"])
-                for log in obj["SystemLogUris"]["SystemLog"]
-            ],
+            system_log_uris=[SystemLog.create(log) for log in obj["SystemLogUris"]["SystemLog"]],
             support_info_uri=obj["SupportInfoUri"],
             system_backup_uri=obj["SystemBackupUri"],
             extension=obj["Extension"],
